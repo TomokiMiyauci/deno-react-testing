@@ -1,10 +1,5 @@
 import { CounterStepProvider, useCounter } from "./component.tsx";
-import { expect } from "./dev_deps.ts";
-import {
-  act,
-  renderHook,
-  suppressErrorOutput,
-} from "@testing-library/react-hooks";
+import { act, expect, renderHook, suppressErrorOutput } from "./dev_deps.ts";
 import { ReactNode } from "react";
 
 Deno.test("should use counter", () => {
