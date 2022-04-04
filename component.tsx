@@ -3,6 +3,7 @@ import {
   ReactNode,
   useCallback,
   useContext,
+  useEffect,
   useState,
 } from "react";
 
@@ -65,5 +66,17 @@ export const CounterStepProvider = (
     {children}
   </CounterStepContext.Provider>
 );
+
+export const useTimer = (initialState = 0) => {
+  const [count, setCount] = useState(initialState);
+  const reset = useCallback(() => setCount(initialState), []);
+  useEffect(() => {
+    const intervalId = setInterval(() => setCount((c) => c + 1), 1000);
+    return () => {
+      clearInterval(intervalId);
+    };
+  });
+  return { count, reset };
+};
 
 export default HiddenMessage;
