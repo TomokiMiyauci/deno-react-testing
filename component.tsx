@@ -1,4 +1,10 @@
-import { ReactNode, useCallback, useState } from "react";
+import {
+  createContext,
+  ReactNode,
+  useCallback,
+  useContext,
+  useState,
+} from "react";
 
 /**
  * @see https://reactjs.org/docs/test-renderer.html
@@ -33,10 +39,31 @@ export function HiddenMessage({ children }: { children: ReactNode }) {
   );
 }
 
-export function useCounter() {
-  const [count, setCount] = useState(0);
-  const increment = useCallback(() => setCount((x) => x + 1), []);
-  return { count, increment };
+const CounterStepContext = createContext(1);
+export function useCounter(initialValue = 0) {
+  const [count, setCount] = useState(initialValue);
+  const step = useContext(CounterStepContext);
+  const increment = useCallback(() => setCount((x) => x + step), [step]);
+  const incrementAsync = useCallback(() => setTimeout(increment, 100), [
+    increment,
+  ]);
+  const reset = useCallback(() => setCount(initialValue), [initialValue]);
+
+  if (count > 9000) {
+    throw Error("It's over 9000!");
+  }
+
+  return { count, increment, incrementAsync, reset };
 }
+
+export type CounterStepProviderProps = { step: number; children?: ReactNode };
+
+export const CounterStepProvider = (
+  { step, children }: CounterStepProviderProps,
+) => (
+  <CounterStepContext.Provider value={step}>
+    {children}
+  </CounterStepContext.Provider>
+);
 
 export default HiddenMessage;
